@@ -17,6 +17,11 @@ void uc8253_gotoxy(uint16_t x, uint16_t y);
 void uc8253_set_resolution(uint16_t w, uint16_t h);
 void uc8253_clear_mem(void);
 void uc8253_refresh_poll();
+int uc8253_set_partial_window(uint8_t xsbank, uint8_t xebank, uint16_t ys,
+	uint16_t ye, int pt_scan);
+void uc8253_partial_in();
+void uc8253_partial_out();
+
 
 void uc8253_init();
 

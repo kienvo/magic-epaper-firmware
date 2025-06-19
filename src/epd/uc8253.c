@@ -171,6 +171,47 @@ void uc8253_refresh_poll()
 	wait();
 }
 
+// `pt_scan = true` means don't touch the outside pixels while refreshing
+int uc8253_set_partial_window(uint8_t xsbank, uint8_t xebank, uint16_t ys,
+	uint16_t ye, int pt_scan)
+{
+	if (xsbank > 0x1d) return -1;
+	if (xebank > 0x1d) return -1;
+	if (xsbank >= xebank) return -1;
+	
+	if (ys > 0x1df) return -1;
+	if (ye > 0x1df) return -1;
+	if (ys >= ye) return -1;
+
+	uint8_t HRST73 = xsbank << 3;
+	uint8_t HRED73 = (xebank << 3) | 0b111;
+	uint8_t VRST8 = (ys >> 8) & 1;
+	uint8_t VRST70 = ys & 0xff;
+	uint8_t VRED8 = (ye >> 8) & 1;
+	uint8_t VRED70 = ye & 0xff;
+
+	uc8253_cmd(PARTIAL_WINDOW);
+	uc8253_send(HRST73);
+	uc8253_send(HRED73);
+	uc8253_send(VRST8);
+	uc8253_send(VRST70);
+	uc8253_send(VRED8);
+	uc8253_send(VRED70);
+	uc8253_send(pt_scan != 0);
+	
+	return 0;
+}
+
+void uc8253_partial_in()
+{
+	uc8253_cmd(PARTIAL_IN);
+}
+
+void uc8253_partial_out()
+{
+	uc8253_cmd(PARTIAL_IN);
+}
+
 void uc8253_init() {
 	uc8253_init_hal();
 

@@ -61,6 +61,12 @@ int main(void)
 	uc8253_clear_mem();
 	// uc8253_refresh_poll();
 
+	if (uc8253_set_partial_window(0, 15, 100, 200, 0)) {
+		PRINT("setting partial window failed\n");
+	} else {
+		uc8253_partial_in();
+	}
+	PRINT("init completed!\n");
 	while (1) {
 		exe_cmd();
 	}
